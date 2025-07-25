@@ -1,111 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Study Room</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
       margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #eef2f7;
-      color: #333;
+      padding: 20px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      min-height: 100vh;
     }
-
-    .room-container {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      width: 90%;
-      max-width: 600px;
+    .container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
       text-align: center;
     }
-
     h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+      color: #333;
     }
-
     .info {
-      font-size: 1.1rem;
-      margin: 0.5rem 0;
+      margin: 20px 0;
+      font-size: 18px;
     }
-
     .participants {
-      margin-top: 1.5rem;
-    }
-
-    .participant-item {
-      background-color: #e0e7ff;
-      padding: 0.5rem 1rem;
+      margin-top: 20px;
+      display: none;
+      background: #f9f9f9;
+      padding: 10px;
       border-radius: 8px;
-      display: inline-block;
-      margin: 0.25rem;
-      font-weight: 500;
     }
-
-    .back-btn {
-      margin-top: 2rem;
-      padding: 0.6rem 1.4rem;
-      background-color: #4f46e5;
+    .participants h3 {
+      margin-bottom: 10px;
+    }
+    .participants ul {
+      list-style: none;
+      padding: 0;
+    }
+    .participants li {
+      margin-bottom: 5px;
+    }
+    button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
       color: white;
       border: none;
       border-radius: 8px;
+      font-size: 16px;
       cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
     }
 
-    .back-btn:hover {
-      background-color: #4338ca;
+    @media (max-width: 500px) {
+      .container {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="room-container">
-    <h1>📚 Study Room</h1>
-    <p class="info" id="roomType">Room Type: </p>
-    <p class="info" id="roomId">Room ID: </p>
-    <p class="info" id="creator">Created by: </p>
-
-    <div class="participants" id="participantsSection" style="display: none;">
-      <h3>Participants</h3>
-      <div id="participantList"></div>
+  <div class="container">
+    <h1>📚 Welcome to your Study Room</h1>
+    <div class="info">
+      <p><strong>Room Type:</strong> <span id="roomType"></span></p>
+      <p><strong>Room ID:</strong> <span id="roomID"></span></p>
+      <p><strong>Created By:</strong> <span id="creatorName"></span></p>
     </div>
-
-    <button class="back-btn" onclick="goBack()">⬅ Back to Home</button>
+    <div class="participants" id="participantsSection">
+      <h3>👥 Participants</h3>
+      <ul id="participantsList"></ul>
+    </div>
+    <button onclick="goBack()">⬅️ Back to Home</button>
   </div>
 
   <script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    const room = JSON.parse(localStorage.getItem("roomData"));
-
-    if (room) {
-      document.getElementById("roomType").innerText = `Room Type: ${room.type === 'single' ? 'Single User' : 'Multi User'}`;
-      document.getElementById("roomId").innerText = `Room ID: ${room.id}`;
-      document.getElementById("creator").innerText = `Created by: ${room.creator}`;
-
-      if (room.type === 'multi') {
-        const participants = room.participants || [];
-        document.getElementById("participantsSection").style.display = 'block';
-        const listDiv = document.getElementById("participantList");
-        participants.forEach(p => {
-          const span = document.createElement("span");
-          span.className = "participant-item";
-          span.textContent = p;
-          listDiv.appendChild(span);
-        });
-      }
-    }
-
     function goBack() {
       window.location.href = "homepage.html";
     }
+
+    window.onload = function () {
+      const roomData = JSON.parse(localStorage.getItem("room"));
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (!roomData || !user) {
+        alert("Missing room or user data. Redirecting to homepage.");
+        window.location.href = "homepage.html";
+        return;
+      }
+
+      document.getElementById("roomType").textContent = roomData.type;
+      document.getElementById("roomID").textContent = roomData.id;
+      document.getElementById("creatorName").textContent = user.name || "Unknown";
+
+      if (roomData.type === "Multi User Room" && roomData.participants && roomData.participants.length > 0) {
+        const list = document.getElementById("participantsList");
+        document.getElementById("participantsSection").style.display = "block";
+        roomData.participants.forEach((p) => {
+          const li = document.createElement("li");
+          li.textContent = p;
+          list.appendChild(li);
+        });
+      }
+    };
   </script>
 </body>
 </html>
