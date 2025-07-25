@@ -1,30 +1,44 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
+  authDomain: "virtual-study-room-95bb1.firebaseapp.com",
+  projectId: "virtual-study-room-95bb1",
+  storageBucket: "virtual-study-room-95bb1.appspot.com",
+  messagingSenderId: "995781311316",
+  appId: "1:995781311316:web:145128a95373a7d2f1a6c1",
+  measurementId: "G-D9DN8X4HH2"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-document.getElementById('googleBtn').addEventListener('click', () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider)
-    .then(() => window.location.href = "welcome.html")
-    .catch(err => alert(err.message));
-});
+window.login = function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-function login() {
-  const username = document.getElementById("username").value;
-  const age = document.getElementById("age").value;
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      window.location.href = "homepage.html";
+    })
+    .catch((error) => {
+      alert("Login error: " + error.message);
+    });
+};
 
-  if (username && age) {
-    localStorage.setItem("user", JSON.stringify({ username, age }));
-    window.location.href = "welcome.html";
-  } else {
-    alert("Please fill in all fields.");
-  }
-}
+window.handleCredentialResponse = function (response) {
+  signInWithPopup(auth, provider)
+    .then(() => {
+      window.location.href = "homepage.html";
+    })
+    .catch((error) => {
+      alert("Google Sign-In failed: " + error.message);
+    });
+};

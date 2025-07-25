@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Virtual Study Room - Login</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <meta charset="UTF-8">
+  <title>Login - Virtual Study Room</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script type="module" src="login.js" defer></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Virtual Study Room</h1>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="number" id="age" placeholder="Age" />
-    <button onclick="login()">Login</button>
-    <div class="divider">or</div>
-    <button id="googleBtn">Sign in with Google</button>
-  </div>
+  <h2>Login</h2>
 
-  <script src="script.js"></script>
+  <input type="text" id="username" placeholder="Username" required><br>
+  <input type="number" id="age" placeholder="Age" required><br>
+  <input type="email" id="email" placeholder="Email" required><br>
+  <input type="password" id="password" placeholder="Password" required><br>
+
+  <button onclick="login()">Login</button>
+  <div id="g_id_onload"
+       data-client_id="YOUR_GOOGLE_CLIENT_ID"
+       data-callback="handleCredentialResponse">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
 </body>
 </html>
