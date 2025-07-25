@@ -2,20 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homepage - Virtual Study Room</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .ready {
+      color: green;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+    }
+    h3 {
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      margin: 0 0.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #4f46e5;
+      color: white;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background-color: #4338ca;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h2 id="welcomeMsg">Welcome!</h2>
-    <p id="statusMsg">Getting your room ready...</p>
+    <h1 id="welcome-msg">Welcome!</h1>
+    <div class="ready">✅ Your Room is Ready!</div>
 
     <h3>Select Room Type</h3>
     <button onclick="createRoom('single')">Single User Room</button>
     <button onclick="createRoom('multi')">Multi User Room</button>
   </div>
 
-  <script type="module" src="homepage.js"></script>
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user?.name) {
+      document.getElementById("welcome-msg").innerText = `Welcome, ${user.name}!`;
+    }
+
+    function createRoom(type) {
+      const roomId = Math.random().toString(36).substring(2, 10);
+      const roomData = {
+        id: roomId,
+        type,
+        creator: user?.name || "Anonymous",
+        participants: type === "multi" ? [user?.name] : [],
+      };
+      localStorage.setItem("roomData", JSON.stringify(roomData));
+      window.location.href = "room.html";
+    }
+  </script>
 </body>
 </html>
