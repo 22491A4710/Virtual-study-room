@@ -1,38 +1,15 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Study Room - Single Mode</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Virtual Study Room - Login</title>
 </head>
 <body>
-  <div class="container">
-    <h2>Study Room Login</h2>
-    
-    <div id="login-section">
-      <input type="text" id="username" placeholder="Enter Username" />
-      <input type="number" id="age" placeholder="Enter Age" />
-      <button onclick="login()">Login</button>
-      <button onclick="googleSignup()">Sign up with Google</button>
-    </div>
+  <h1>Welcome to Virtual Study Room</h1>
+  <button id="google-login">Sign in with Google</button>
 
-    <div id="mode-selection" style="display:none;">
-      <h3>Choose Mode:</h3>
-      <button onclick="enterSingleMode()">Single Mode</button>
-      <button disabled>Multiple Mode (Coming Soon)</button>
-    </div>
-
-    <div id="single-mode" style="display:none;">
-      <h3>To-Do List (With Time)</h3>
-      <input type="text" id="task" placeholder="Task..." />
-      <input type="time" id="time" />
-      <button onclick="addTask()">Add Task</button>
-      <ul id="todo-list"></ul>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+  <!-- Link to the script -->
+  <script type="module" src="script.js"></script>
 </body>
 </html>

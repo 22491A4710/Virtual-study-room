@@ -1,39 +1,33 @@
-// script.js
+// Firebase SDK Imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 
-function login() {
-  const username = document.getElementById("username").value.trim();
-  const age = document.getElementById("age").value.trim();
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
+  authDomain: "virtual-study-room-95bb1.firebaseapp.com",
+  projectId: "virtual-study-room-95bb1",
+  storageBucket: "virtual-study-room-95bb1.appspot.com",
+  messagingSenderId: "995781311316",
+  appId: "1:995781311316:web:145128a95373a7d2f1a6c1",
+  measurementId: "G-D9DN8X4HH2"
+};
 
-  if (username && age) {
-    alert(`Welcome ${username}!`);
-    document.getElementById("login-section").style.display = "none";
-    document.getElementById("mode-selection").style.display = "block";
-  } else {
-    alert("Please enter both username and age.");
-  }
-}
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-function googleSignup() {
-  alert("Google Signup is under development.");
-}
-
-function enterSingleMode() {
-  document.getElementById("mode-selection").style.display = "none";
-  document.getElementById("single-mode").style.display = "block";
-}
-
-function addTask() {
-  const task = document.getElementById("task").value.trim();
-  const time = document.getElementById("time").value;
-
-  if (task && time) {
-    const li = document.createElement("li");
-    li.textContent = `${task} - ${time}`;
-    document.getElementById("todo-list").appendChild(li);
-
-    document.getElementById("task").value = "";
-    document.getElementById("time").value = "";
-  } else {
-    alert("Please enter task and time.");
-  }
-}
+// Sign-in button event
+document.getElementById("google-login").addEventListener("click", () => {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      const user = result.user;
+      alert("Signed in as: " + user.displayName);
+      // Redirect or show homepage here
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("Google sign-in failed: " + error.message);
+    });
+});
