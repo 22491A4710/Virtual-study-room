@@ -1,6 +1,6 @@
 // Firebase setup
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
@@ -13,28 +13,17 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
+const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-window.normalLogin = function () {
-  const username = document.getElementById("username").value;
-  const age = document.getElementById("age").value;
-  if (username && age) {
-    alert(`Welcome ${username}, Age: ${age}`);
-    // You can redirect to homepage here
-  } else {
-    alert("Please enter username and age");
-  }
-};
-
-document.getElementById("googleLogin").addEventListener("click", () => {
+document.getElementById("googleSignIn").addEventListener("click", () => {
   signInWithPopup(auth, provider)
     .then((result) => {
-      const user = result.user;
-      alert(`Welcome ${user.displayName}!`);
-      // Redirect to dashboard/home
+      console.log("Signed in user:", result.user);
+      window.location.href = "homepage.html"; // Redirect on success
     })
     .catch((error) => {
-      alert("Google sign-in failed: " + error.message);
+      console.error("Google Sign-In Error:", error);
+      alert("Google Sign-In Failed");
     });
 });

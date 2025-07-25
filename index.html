@@ -3,18 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Virtual Study Room - Login</title>
+  <title>Login Page</title>
   <link rel="stylesheet" href="style.css" />
-  <script type="module" src="script.js" defer></script>
 </head>
 <body>
   <div class="container">
-    <h2>Login</h2>
+    <h1>Virtual Study Room</h1>
+    
     <input type="text" id="username" placeholder="Username" />
     <input type="number" id="age" placeholder="Age" />
-    <button onclick="normalLogin()">Login</button>
-    <hr />
-    <button id="googleLogin" class="google-btn">Sign in with Google</button>
+    
+    <button id="loginBtn">Login</button>
+    
+    <div class="divider">or</div>
+    
+    <button id="googleSignIn">Sign in with Google</button>
   </div>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
