@@ -4,12 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Virtual Study Room - Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="script.js" defer></script>
 </head>
 <body>
-  <h1>Welcome to Virtual Study Room</h1>
-  <button id="google-login">Sign in with Google</button>
-
-  <!-- Link to the script -->
-  <script type="module" src="script.js"></script>
+  <div class="container">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="number" id="age" placeholder="Age" />
+    <button onclick="normalLogin()">Login</button>
+    <hr />
+    <button id="googleLogin" class="google-btn">Sign in with Google</button>
+  </div>
 </body>
 </html>

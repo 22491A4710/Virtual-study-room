@@ -1,8 +1,7 @@
-// Firebase SDK Imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+// Firebase setup
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
   authDomain: "virtual-study-room-95bb1.firebaseapp.com",
@@ -13,21 +12,29 @@ const firebaseConfig = {
   measurementId: "G-D9DN8X4HH2"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
-// Sign-in button event
-document.getElementById("google-login").addEventListener("click", () => {
+window.normalLogin = function () {
+  const username = document.getElementById("username").value;
+  const age = document.getElementById("age").value;
+  if (username && age) {
+    alert(`Welcome ${username}, Age: ${age}`);
+    // You can redirect to homepage here
+  } else {
+    alert("Please enter username and age");
+  }
+};
+
+document.getElementById("googleLogin").addEventListener("click", () => {
   signInWithPopup(auth, provider)
     .then((result) => {
       const user = result.user;
-      alert("Signed in as: " + user.displayName);
-      // Redirect or show homepage here
+      alert(`Welcome ${user.displayName}!`);
+      // Redirect to dashboard/home
     })
     .catch((error) => {
-      console.error(error);
       alert("Google sign-in failed: " + error.message);
     });
 });
