@@ -1,7 +1,8 @@
+// Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// Firebase config
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
   authDomain: "virtual-study-room-95bb1.firebaseapp.com",
@@ -12,32 +13,38 @@ const firebaseConfig = {
   measurementId: "G-D9DN8X4HH2"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Manual login
+// ✅ Normal login function
 window.normalLogin = function () {
   const username = document.getElementById("username").value.trim();
   const age = document.getElementById("age").value.trim();
 
-  if (username && age) {
-    localStorage.setItem("user", JSON.stringify({ name: username, age }));
-    window.location.href = "homepage.html";
-  } else {
-    alert("Please enter both name and age");
+  if (!username || !age) {
+    alert("Please enter both Username and Age");
+    return;
   }
+
+  // Save to localStorage
+  localStorage.setItem("user", JSON.stringify({ name: username, age }));
+  // Redirect to homepage
+  window.location.href = "homepage.html";
 };
 
-// Google Sign-In
+// ✅ Google Sign-In
 document.getElementById("google-signin").addEventListener("click", () => {
   signInWithPopup(auth, provider)
     .then((result) => {
       const user = result.user;
+      // Save to localStorage
       localStorage.setItem("user", JSON.stringify({
         name: user.displayName,
         email: user.email
       }));
+      // Redirect to homepage
       window.location.href = "homepage.html";
     })
     .catch((error) => {
