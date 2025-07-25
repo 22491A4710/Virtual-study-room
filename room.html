@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Study Room</title>
+</head>
+<body>
+  <h2>Welcome to your Study Room</h2>
+  <p id="roomDetails"></p>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    const roomID = localStorage.getItem("roomID");
+
+    document.getElementById("roomDetails").innerText =
+      `Room ID: ${roomID}\nUser: ${user?.name || "Unknown"}`;
+  </script>
+</body>
+</html>

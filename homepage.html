@@ -1,66 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Study Room - Home</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f4f8;
-      margin: 0;
-      padding: 20px;
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .welcome {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    .section {
-      background: white;
-      padding: 20px;
-      margin: auto;
-      max-width: 500px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #e53935;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Homepage - Virtual Study Room</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <div class="header">
-    <h1>Welcome to Virtual Study Room</h1>
+  <div class="container">
+    <h2 id="welcomeMsg">Welcome!</h2>
+    <h3>Select Room Type</h3>
+    <button onclick="createRoom('single')">Single User Room</button>
+    <button onclick="createRoom('multi')">Multi User Room</button>
   </div>
 
-  <div class="section">
-    <div class="welcome" id="welcomeUser">Hello, User!</div>
-    <p>Your room is ready. Start focusing now 🚀</p>
-    <button onclick="logout()">Logout</button>
-  </div>
-
-  <script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.username) {
-      document.getElementById("welcomeUser").textContent = `Hello, ${user.username}!`;
-    } else if (user && user.email) {
-      document.getElementById("welcomeUser").textContent = `Hello, ${user.email.split('@')[0]}!`;
-    } else {
-      window.location.href = "index.html"; // redirect if no user
-    }
-
-    function logout() {
-      localStorage.removeItem("user");
-      window.location.href = "index.html";
-    }
-  </script>
+  <script type="module" src="homepage.js"></script>
 </body>
 </html>
