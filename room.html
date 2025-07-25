@@ -2,117 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Study Room</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f2f5;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .container {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-    }
-    h1 {
-      color: #333;
-    }
-    .info {
-      margin: 20px 0;
-      font-size: 18px;
-    }
-    .participants {
-      margin-top: 20px;
-      display: none;
-      background: #f9f9f9;
-      padding: 10px;
-      border-radius: 8px;
-    }
-    .participants h3 {
-      margin-bottom: 10px;
-    }
-    .participants ul {
-      list-style: none;
-      padding: 0;
-    }
-    .participants li {
-      margin-bottom: 5px;
-    }
-    button {
-      margin-top: 30px;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-
-    @media (max-width: 500px) {
-      .container {
-        padding: 20px;
-      }
-    }
-  </style>
+  <title>Study Room</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"/>
 </head>
-<body>
-  <div class="container">
-    <h1>📚 Welcome to your Study Room</h1>
-    <div class="info">
-      <p><strong>Room Type:</strong> <span id="roomType"></span></p>
-      <p><strong>Room ID:</strong> <span id="roomID"></span></p>
-      <p><strong>Created By:</strong> <span id="creatorName"></span></p>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-[90%] max-w-lg text-center">
+    <h1 class="text-3xl font-bold mb-2 flex items-center justify-center">
+      📚 <span class="ml-2">Study Room</span>
+    </h1>
+    <p id="room-type" class="text-lg mb-1"></p>
+    <p id="room-id" class="text-lg mb-1"></p>
+    <p id="creator-name" class="text-lg mb-4"></p>
+
+    <!-- Only for Multi User -->
+    <div id="participant-section" class="hidden mt-4">
+      <h2 class="font-semibold text-lg mb-2">Participants:</h2>
+      <ul id="participants-list" class="list-disc list-inside text-left text-gray-700"></ul>
     </div>
-    <div class="participants" id="participantsSection">
-      <h3>👥 Participants</h3>
-      <ul id="participantsList"></ul>
-    </div>
-    <button onclick="goBack()">⬅️ Back to Home</button>
+
+    <button onclick="goHome()" class="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
+      ⬅️ Back to Home
+    </button>
   </div>
 
   <script>
-    function goBack() {
+    // Load room and user details from localStorage
+    const roomData = JSON.parse(localStorage.getItem("roomData"));
+    const userData = JSON.parse(localStorage.getItem("user"));
+
+    if (!roomData || !userData) {
+      alert("No room or user data found. Redirecting to homepage...");
       window.location.href = "homepage.html";
     }
 
-    window.onload = function () {
-      const roomData = JSON.parse(localStorage.getItem("room"));
-      const user = JSON.parse(localStorage.getItem("user"));
+    document.getElementById("room-type").textContent = `Room Type: ${roomData.type}`;
+    document.getElementById("room-id").textContent = `Room ID: ${roomData.roomId}`;
+    document.getElementById("creator-name").textContent = `Created by: ${userData.name || "Unknown"}`;
 
-      if (!roomData || !user) {
-        alert("Missing room or user data. Redirecting to homepage.");
-        window.location.href = "homepage.html";
-        return;
-      }
+    // Show participants if it's a Multi User Room
+    if (roomData.type === "Multi User Room" && Array.isArray(roomData.participants) && roomData.participants.length > 0) {
+      const section = document.getElementById("participant-section");
+      const list = document.getElementById("participants-list");
+      section.classList.remove("hidden");
+      roomData.participants.forEach((p) => {
+        const li = document.createElement("li");
+        li.textContent = p;
+        list.appendChild(li);
+      });
+    }
 
-      document.getElementById("roomType").textContent = roomData.type;
-      document.getElementById("roomID").textContent = roomData.id;
-      document.getElementById("creatorName").textContent = user.name || "Unknown";
-
-      if (roomData.type === "Multi User Room" && roomData.participants && roomData.participants.length > 0) {
-        const list = document.getElementById("participantsList");
-        document.getElementById("participantsSection").style.display = "block";
-        roomData.participants.forEach((p) => {
-          const li = document.createElement("li");
-          li.textContent = p;
-          list.appendChild(li);
-        });
-      }
-    };
+    function goHome() {
+      window.location.href = "homepage.html";
+    }
   </script>
 </body>
 </html>

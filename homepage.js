@@ -1,55 +1,54 @@
-// Fetch user
-const user = JSON.parse(localStorage.getItem("user"));
-const welcomeMsg = document.getElementById("welcomeMsg");
-const statusMsg = document.getElementById("statusMsg");
-
-if (user) {
-  welcomeMsg.textContent = `Welcome, ${user.name}!`;
-  setTimeout(() => {
-    statusMsg.textContent = "✅ Your Room is Ready!";
-  }, 1000);
-} else {
-  welcomeMsg.textContent = "User not logged in.";
-  statusMsg.textContent = "";
+// Room ID generator
+function generateRoomId(length = 8) {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let id = '';
+  for (let i = 0; i < length; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return id;
 }
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// Get logged in user
+const user = JSON.parse(localStorage.getItem("user"));
 
-const firebaseConfig = {
-  apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
-  authDomain: "virtual-study-room-95bb1.firebaseapp.com",
-  projectId: "virtual-study-room-95bb1",
-  storageBucket: "virtual-study-room-95bb1.appspot.com",
-  messagingSenderId: "995781311316",
-  appId: "1:995781311316:web:145128a95373a7d2f1a6c1",
-  measurementId: "G-D9DN8X4HH2"
-};
+if (!user) {
+  alert("Please login first.");
+  window.location.href = "index.html";
+}
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// Update UI
+document.getElementById("welcome").textContent = `Welcome, ${user.name}!`;
+document.getElementById("confirmation").textContent = "Your Room is Ready!";
 
-// Create room
-window.createRoom = async function (type) {
-  if (!user) return alert("Login required");
-
+// Room Creation
+document.getElementById("single-room-btn").addEventListener("click", () => {
   const roomData = {
-    type,
-    createdBy: user.name,
-    members: [user.name],
-    createdAt: new Date().toISOString()
+    type: "Single User",
+    roomId: generateRoomId(),
+    creator: user.name,
+    participants: []
   };
 
-  try {
-    const docRef = await addDoc(collection(db, "rooms"), roomData);
-    localStorage.setItem("roomID", docRef.id);
-    window.location.href = "room.html";
-  } catch (e) {
-    console.error("Error creating room:", e);
-    alert("Failed to create room.");
-  }
-};
+  localStorage.setItem("roomData", JSON.stringify(roomData));
+  window.location.href = "room.html";
+});
+
+document.getElementById("multi-room-btn").addEventListener("click", () => {
+  const participantName = prompt("Enter participant name to invite (optional):");
+
+  const roomData = {
+    type: "Multi User",
+    roomId: generateRoomId(),
+    creator: user.name,
+    participants: participantName ? [participantName] : []
+  };
+
+  localStorage.setItem("roomData", JSON.stringify(roomData));
+  window.location.href = "room.html";
+});
+
+// Logout
+document.getElementById("logout-btn").addEventListener("click", () => {
+  localStorage.clear();
+  window.location.href = "index.html";
+});

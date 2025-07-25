@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Homepage - Virtual Study Room</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
     body {
       margin: 0;
@@ -39,7 +39,7 @@
     }
     button {
       padding: 0.6rem 1.2rem;
-      margin: 0 0.5rem;
+      margin: 0.4rem;
       font-size: 1rem;
       border: none;
       border-radius: 8px;
@@ -51,6 +51,12 @@
     button:hover {
       background-color: #4338ca;
     }
+    .logout {
+      background-color: #ef4444;
+    }
+    .logout:hover {
+      background-color: #dc2626;
+    }
   </style>
 </head>
 <body>
@@ -61,24 +67,44 @@
     <h3>Select Room Type</h3>
     <button onclick="createRoom('single')">Single User Room</button>
     <button onclick="createRoom('multi')">Multi User Room</button>
+
+    <br /><br />
+    <button class="logout" onclick="logout()">Logout</button>
   </div>
 
   <script>
     const user = JSON.parse(localStorage.getItem("user"));
-    if (user?.name) {
-      document.getElementById("welcome-msg").innerText = `Welcome, ${user.name}!`;
+    if (!user || !user.name) {
+      alert("You are not logged in. Redirecting to login page...");
+      window.location.href = "index.html";
+    }
+
+    document.getElementById("welcome-msg").innerText = `Welcome, ${user.name}!`;
+
+    function generateRoomId(length = 8) {
+      const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      let id = '';
+      for (let i = 0; i < length; i++) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return id;
     }
 
     function createRoom(type) {
-      const roomId = Math.random().toString(36).substring(2, 10);
+      const roomId = generateRoomId();
       const roomData = {
-        id: roomId,
-        type,
-        creator: user?.name || "Anonymous",
-        participants: type === "multi" ? [user?.name] : [],
+        roomId,
+        type: type === "single" ? "Single User" : "Multi User",
+        creator: user.name,
+        participants: type === "multi" ? [user.name] : []
       };
       localStorage.setItem("roomData", JSON.stringify(roomData));
       window.location.href = "room.html";
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
     }
   </script>
 </body>
