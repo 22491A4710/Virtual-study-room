@@ -1,8 +1,7 @@
-// Firebase import (use type="module" in HTML)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// Your Firebase Config
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
   authDomain: "virtual-study-room-95bb1.firebaseapp.com",
@@ -17,7 +16,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Normal login button
+// Manual login
 window.normalLogin = function () {
   const username = document.getElementById("username").value.trim();
   const age = document.getElementById("age").value.trim();
@@ -26,11 +25,11 @@ window.normalLogin = function () {
     localStorage.setItem("user", JSON.stringify({ name: username, age }));
     window.location.href = "homepage.html";
   } else {
-    alert("Please enter both username and age");
+    alert("Please enter both name and age");
   }
 };
 
-// Google sign-in
+// Google Sign-In
 document.getElementById("google-signin").addEventListener("click", () => {
   signInWithPopup(auth, provider)
     .then((result) => {
@@ -43,6 +42,6 @@ document.getElementById("google-signin").addEventListener("click", () => {
     })
     .catch((error) => {
       console.error("Google Sign-In Error:", error);
-      alert("Google Sign-In failed.");
+      alert("Google sign-in failed.");
     });
 });
