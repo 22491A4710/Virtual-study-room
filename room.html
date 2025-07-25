@@ -4,12 +4,38 @@
   <meta charset="UTF-8">
   <title>Study Room</title>
 </head>
-<body>
-  <h1>You are now in your Study Room</h1>
-  <p>Room ID: <span id="roomId"></span></p>
+<body style="text-align: center; font-family: Arial; padding-top: 50px;">
+  <h2>🎉 You're in a Room!</h2>
+  <div id="room-info"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <script src="firebase-config.js"></script>
+
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    document.getElementById('roomId').innerText = urlParams.get('roomId') || 'Unknown';
+    const roomId = localStorage.getItem("roomId");
+    const roomInfoDiv = document.getElementById("room-info");
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    if (roomId) {
+      db.collection("rooms").doc(roomId).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          roomInfoDiv.innerHTML = `
+            <p><strong>Room ID:</strong> ${data.roomId}</p>
+            <p><strong>Room Type:</strong> ${data.type}</p>
+            <p><strong>Created By:</strong> ${data.createdBy}</p>
+          `;
+        } else {
+          roomInfoDiv.innerHTML = "Room not found.";
+        }
+      });
+    } else {
+      roomInfoDiv.innerText = "No Room ID found.";
+    }
   </script>
 </body>
 </html>
