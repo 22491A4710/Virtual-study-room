@@ -1,18 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Study Room</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #eef2f7;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .room-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .info {
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+
+    .participants {
+      margin-top: 1.5rem;
+    }
+
+    .participant-item {
+      background-color: #e0e7ff;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 0.25rem;
+      font-weight: 500;
+    }
+
+    .back-btn {
+      margin-top: 2rem;
+      padding: 0.6rem 1.4rem;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background-color: #4338ca;
+    }
+  </style>
 </head>
 <body>
-  <h2>Welcome to your Study Room</h2>
-  <p id="roomDetails"></p>
+  <div class="room-container">
+    <h1>📚 Study Room</h1>
+    <p class="info" id="roomType">Room Type: </p>
+    <p class="info" id="roomId">Room ID: </p>
+    <p class="info" id="creator">Created by: </p>
+
+    <div class="participants" id="participantsSection" style="display: none;">
+      <h3>Participants</h3>
+      <div id="participantList"></div>
+    </div>
+
+    <button class="back-btn" onclick="goBack()">⬅ Back to Home</button>
+  </div>
 
   <script>
     const user = JSON.parse(localStorage.getItem("user"));
-    const roomID = localStorage.getItem("roomID");
+    const room = JSON.parse(localStorage.getItem("roomData"));
 
-    document.getElementById("roomDetails").innerText =
-      `Room ID: ${roomID}\nUser: ${user?.name || "Unknown"}`;
+    if (room) {
+      document.getElementById("roomType").innerText = `Room Type: ${room.type === 'single' ? 'Single User' : 'Multi User'}`;
+      document.getElementById("roomId").innerText = `Room ID: ${room.id}`;
+      document.getElementById("creator").innerText = `Created by: ${room.creator}`;
+
+      if (room.type === 'multi') {
+        const participants = room.participants || [];
+        document.getElementById("participantsSection").style.display = 'block';
+        const listDiv = document.getElementById("participantList");
+        participants.forEach(p => {
+          const span = document.createElement("span");
+          span.className = "participant-item";
+          span.textContent = p;
+          listDiv.appendChild(span);
+        });
+      }
+    }
+
+    function goBack() {
+      window.location.href = "homepage.html";
+    }
   </script>
 </body>
 </html>
