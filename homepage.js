@@ -1,7 +1,16 @@
-// Fetch user data
+// Fetch user
 const user = JSON.parse(localStorage.getItem("user"));
+const welcomeMsg = document.getElementById("welcomeMsg");
+const statusMsg = document.getElementById("statusMsg");
+
 if (user) {
-  document.getElementById("welcomeMsg").textContent = `Welcome, ${user.name}!`;
+  welcomeMsg.textContent = `Welcome, ${user.name}!`;
+  setTimeout(() => {
+    statusMsg.textContent = "✅ Your Room is Ready!";
+  }, 1000);
+} else {
+  welcomeMsg.textContent = "User not logged in.";
+  statusMsg.textContent = "";
 }
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
