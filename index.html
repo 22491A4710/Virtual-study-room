@@ -2,20 +2,20 @@
 <html>
 <head>
   <title>Virtual Study Room - Login</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
-  <div class="login-container">
+  <div class="container">
     <h1>Virtual Study Room</h1>
-
-    <input type="text" id="username" placeholder="Enter your name" />
-    <input type="number" id="age" placeholder="Enter your age" />
-
-    <button onclick="normalLogin()">Login</button>
-    <div class="divider">OR</div>
-    <button id="google-signin">Sign in with Google</button>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="number" id="age" placeholder="Age" />
+    <button onclick="login()">Login</button>
+    <div class="divider">or</div>
+    <button id="googleBtn">Sign in with Google</button>
   </div>
 
-  <script type="module" src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

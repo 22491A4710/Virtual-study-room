@@ -1,31 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Virtual Study Room - Home</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Welcome</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #e3f2fd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    h1 {
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Welcome to the Virtual Study Room</h1>
-
-    <label for="roomType">Choose Room Type:</label>
-    <select id="roomType">
-      <option value="single">Single User Room</option>
-      <option value="multi">Multiple Users Room</option>
-    </select>
-
-    <br><br>
-    <label for="task">Enter your Task:</label>
-    <input type="text" id="task" placeholder="e.g. Study Math">
-
-    <label for="timer">Timer (minutes):</label>
-    <input type="number" id="timer" min="1" placeholder="25">
-
-    <button onclick="createRoom()">Create Room</button>
-    <button onclick="logout()">Logout</button>
-  </div>
-
-  <script type="module" src="script.js"></script>
+  <h1>Welcome to Virtual Study Room!</h1>
 </body>
 </html>
