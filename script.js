@@ -1,7 +1,4 @@
-// Firebase setup
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
-
+// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
   authDomain: "virtual-study-room-95bb1.firebaseapp.com",
@@ -12,18 +9,45 @@ const firebaseConfig = {
   measurementId: "G-D9DN8X4HH2"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+// Init Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
-document.getElementById("googleSignIn").addEventListener("click", () => {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      console.log("Signed in user:", result.user);
-      window.location.href = "homepage.html"; // Redirect on success
-    })
-    .catch((error) => {
-      console.error("Google Sign-In Error:", error);
-      alert("Google Sign-In Failed");
-    });
+// Check Auth Status
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById("welcome-message").textContent = `Welcome, ${user.displayName}!`;
+    document.getElementById("user-photo").src = user.photoURL;
+  } else {
+    window.location.href = "index.html"; // Redirect if not logged in
+  }
 });
+
+// Logout
+document.getElementById("logout-btn").onclick = () => {
+  auth.signOut().then(() => {
+    window.location.href = "index.html";
+  });
+};
+
+// Task Logic
+function addTask() {
+  const taskInput = document.getElementById("task-input");
+  const taskTime = document.getElementById("task-time");
+  const list = document.getElementById("task-list");
+
+  if (!taskInput.value || !taskTime.value) {
+    alert("Please enter both task and time.");
+    return;
+  }
+
+  const li = document.createElement("li");
+  li.innerHTML = `
+    ${taskInput.value} - ⏱ ${taskTime.value} mins 
+    <button onclick="this.parentElement.remove()">❌</button>
+  `;
+  list.appendChild(li);
+
+  taskInput.value = "";
+  taskTime.value = "";
+}
