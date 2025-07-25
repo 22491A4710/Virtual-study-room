@@ -1,36 +1,46 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f2f2f2;
+  background-color: #f2f5fa;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   height: 100vh;
 }
 
-.login-box {
+.login-container {
   background: white;
   padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 300px;
   text-align: center;
 }
 
-input, button {
-  display: block;
+input {
   width: 100%;
   margin: 10px 0;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 10px;
   border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
 button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
   background-color: #4CAF50;
   color: white;
-  border: none;
+  font-weight: bold;
   cursor: pointer;
 }
 
-#google-login {
-  background-color: #db4437;
+button:hover {
+  background-color: #45a049;
+}
+
+.divider {
+  margin: 15px 0;
+  font-weight: bold;
 }

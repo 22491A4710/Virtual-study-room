@@ -1,4 +1,8 @@
-// Firebase setup
+// Firebase import (use type="module" in HTML)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// Your Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
   authDomain: "virtual-study-room-95bb1.firebaseapp.com",
@@ -9,34 +13,36 @@ const firebaseConfig = {
   measurementId: "G-D9DN8X4HH2"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-// Manual Login
-function manualLogin() {
-  const username = document.getElementById("username").value;
-  const age = document.getElementById("age").value;
+// Normal login button
+window.normalLogin = function () {
+  const username = document.getElementById("username").value.trim();
+  const age = document.getElementById("age").value.trim();
 
   if (username && age) {
-    localStorage.setItem("username", username);
-    localStorage.setItem("age", age);
+    localStorage.setItem("user", JSON.stringify({ name: username, age }));
     window.location.href = "homepage.html";
   } else {
-    alert("Please enter both username and age.");
+    alert("Please enter both username and age");
   }
-}
+};
 
-// Google Sign-In
-function googleLogin() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider)
+// Google sign-in
+document.getElementById("google-signin").addEventListener("click", () => {
+  signInWithPopup(auth, provider)
     .then((result) => {
-      localStorage.setItem("username", result.user.displayName);
-      localStorage.setItem("email", result.user.email);
+      const user = result.user;
+      localStorage.setItem("user", JSON.stringify({
+        name: user.displayName,
+        email: user.email
+      }));
       window.location.href = "homepage.html";
     })
     .catch((error) => {
-      console.error("Google Sign-In Error:", error.message);
-      alert("Google sign-in failed.");
+      console.error("Google Sign-In Error:", error);
+      alert("Google Sign-In failed.");
     });
-}
+});
