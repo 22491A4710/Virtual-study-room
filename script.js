@@ -1,7 +1,8 @@
+// Firebase App (the core Firebase SDK) is always required
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
   authDomain: "virtual-study-room-95bb1.firebaseapp.com",
@@ -13,35 +14,53 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 
-// Manual login
-window.normalLogin = function () {
-  const username = document.getElementById("username").value.trim();
-  const age = document.getElementById("age").value.trim();
-
-  if (username && age) {
-    localStorage.setItem("user", JSON.stringify({ name: username, age }));
-    window.location.href = "homepage.html";
-  } else {
-    alert("Please enter both name and age");
+// Monitor login status
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "index.html";
   }
-};
-
-// Google Sign-In
-document.getElementById("google-signin").addEventListener("click", () => {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      const user = result.user;
-      localStorage.setItem("user", JSON.stringify({
-        name: user.displayName,
-        email: user.email
-      }));
-      window.location.href = "homepage.html";
-    })
-    .catch((error) => {
-      console.error("Google Sign-In Error:", error);
-      alert("Google sign-in failed.");
-    });
 });
+
+// Room Creation
+async function createRoom() {
+  const user = auth.currentUser;
+  const roomType = document.getElementById("roomType").value;
+  const task = document.getElementById("task").value;
+  const timer = document.getElementById("timer").value;
+
+  if (!task || !timer) {
+    alert("Please enter task and timer.");
+    return;
+  }
+
+  try {
+    const docRef = await addDoc(collection(db, "rooms"), {
+      roomType: roomType,
+      createdBy: user.uid,
+      task: task,
+      timer: timer,
+      members: roomType === "multi" ? [user.uid] : [],
+      createdAt: new Date()
+    });
+
+    const roomId = docRef.id;
+    window.location.href = `room.html?roomId=${roomId}`;
+  } catch (e) {
+    console.error("Error adding room: ", e);
+  }
+}
+
+// Logout
+function logout() {
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
+  }).catch(error => {
+    console.error("Sign out error:", error);
+  });
+}
+
+window.createRoom = createRoom;
+window.logout = logout;
