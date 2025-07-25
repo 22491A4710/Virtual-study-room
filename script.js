@@ -1,4 +1,4 @@
-// Firebase Config
+// Firebase setup
 const firebaseConfig = {
   apiKey: "AIzaSyB0dbcTmu0TVEFUeKnLmCuztcn47t_9MyQ",
   authDomain: "virtual-study-room-95bb1.firebaseapp.com",
@@ -9,45 +9,34 @@ const firebaseConfig = {
   measurementId: "G-D9DN8X4HH2"
 };
 
-// Init Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// Check Auth Status
-auth.onAuthStateChanged(user => {
-  if (user) {
-    document.getElementById("welcome-message").textContent = `Welcome, ${user.displayName}!`;
-    document.getElementById("user-photo").src = user.photoURL;
+// Manual Login
+function manualLogin() {
+  const username = document.getElementById("username").value;
+  const age = document.getElementById("age").value;
+
+  if (username && age) {
+    localStorage.setItem("username", username);
+    localStorage.setItem("age", age);
+    window.location.href = "homepage.html";
   } else {
-    window.location.href = "index.html"; // Redirect if not logged in
+    alert("Please enter both username and age.");
   }
-});
+}
 
-// Logout
-document.getElementById("logout-btn").onclick = () => {
-  auth.signOut().then(() => {
-    window.location.href = "index.html";
-  });
-};
-
-// Task Logic
-function addTask() {
-  const taskInput = document.getElementById("task-input");
-  const taskTime = document.getElementById("task-time");
-  const list = document.getElementById("task-list");
-
-  if (!taskInput.value || !taskTime.value) {
-    alert("Please enter both task and time.");
-    return;
-  }
-
-  const li = document.createElement("li");
-  li.innerHTML = `
-    ${taskInput.value} - ⏱ ${taskTime.value} mins 
-    <button onclick="this.parentElement.remove()">❌</button>
-  `;
-  list.appendChild(li);
-
-  taskInput.value = "";
-  taskTime.value = "";
+// Google Sign-In
+function googleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider)
+    .then((result) => {
+      localStorage.setItem("username", result.user.displayName);
+      localStorage.setItem("email", result.user.email);
+      window.location.href = "homepage.html";
+    })
+    .catch((error) => {
+      console.error("Google Sign-In Error:", error.message);
+      alert("Google sign-in failed.");
+    });
 }

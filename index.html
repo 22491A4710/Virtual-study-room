@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login Page</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Login | Virtual Study Room</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Virtual Study Room</h1>
-    
-    <input type="text" id="username" placeholder="Username" />
-    <input type="number" id="age" placeholder="Age" />
-    
-    <button id="loginBtn">Login</button>
-    
-    <div class="divider">or</div>
-    
-    <button id="googleSignIn">Sign in with Google</button>
+  <div class="login-box">
+    <h2>Virtual Study Room</h2>
+
+    <input type="text" id="username" placeholder="Enter Username" required>
+    <input type="number" id="age" placeholder="Enter Age" required>
+
+    <button onclick="manualLogin()">Login</button>
+
+    <p>OR</p>
+
+    <button onclick="googleLogin()" id="google-login">Sign in with Google</button>
   </div>
 
-  <script type="module" src="script.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

@@ -1,60 +1,36 @@
 body {
   font-family: Arial, sans-serif;
   background: #f2f2f2;
-  padding: 20px;
-  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.container {
-  max-width: 500px;
-  margin: auto;
+.login-box {
   background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
-.user-info {
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
   text-align: center;
 }
 
-#user-photo {
-  width: 80px;
-  border-radius: 50%;
-  margin-bottom: 10px;
+input, button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
-#logout-btn {
-  background: #e74c3c;
+button {
+  background-color: #4CAF50;
   color: white;
-  padding: 8px 15px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
 }
 
-.todo-section {
-  margin-top: 20px;
-}
-
-.todo-section input, .todo-section button {
-  padding: 10px;
-  margin: 5px 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-#task-list {
-  list-style: none;
-  padding: 0;
-}
-
-#task-list li {
-  background: #f9f9f9;
-  margin: 10px 0;
-  padding: 10px;
-  border-left: 5px solid #3498db;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+#google-login {
+  background-color: #db4437;
 }
