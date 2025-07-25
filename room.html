@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Study Room</title>
+</head>
+<body>
+  <h2>Study Room</h2>
+  <p id="roomIdDisplay"></p>
+  <script>
+    const roomId = localStorage.getItem("roomId");
+    document.getElementById("roomIdDisplay").textContent = "Room ID: " + roomId;
+  </script>
+</body>
+</html>

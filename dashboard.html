@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Virtual Study Room - Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f5f5f5;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .single-btn {
+      background-color: #007bff;
+      color: white;
+    }
+    .multi-btn {
+      background-color: #28a745;
+      color: white;
+    }
+    #room-info {
+      margin-top: 30px;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to Virtual Study Room</h1>
+  <p>Select your room type:</p>
+  <button class="single-btn" onclick="createRoom('single')">Create Single User Room</button>
+  <button class="multi-btn" onclick="createRoom('multi')">Create Multiple Users Room</button>
+
+  <div id="room-info"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
