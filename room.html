@@ -1,103 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Study Room</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded-2xl shadow-xl w-[90%] max-w-lg text-center">
-    <h1 class="text-3xl font-bold mb-2 flex items-center justify-center">
-      📚 <span class="ml-2">Study Room</span>
-    </h1>
-    <p id="room-type" class="text-lg mb-1"></p>
-    <p id="room-id" class="text-lg mb-1"></p>
-    <p id="creator-name" class="text-lg mb-4"></p>
+<!-- Timer Buttons (Updated UI) -->
+<div class="mt-4 flex flex-col gap-2">
+  <p class="font-semibold">📝 Task: <span id="currentTask">None</span></p>
+  <p class="font-semibold">⏱ Time Left: <span id="timerDisplay">00:00</span></p>
 
-    <!-- Only for Multi User -->
-    <div id="participant-section" class="hidden mt-4">
-      <h2 class="font-semibold text-lg mb-2">Participants:</h2>
-      <ul id="participants-list" class="list-disc list-inside text-left text-gray-700"></ul>
-    </div>
-
-    <!-- Only for Single User -->
-    <div id="single-user-tools" class="hidden mt-6">
-      <input id="taskInput" type="text" placeholder="Enter your task..." class="border p-2 rounded w-full mb-3" />
-      <input id="timerInput" type="number" placeholder="Set timer (minutes)" class="border p-2 rounded w-full mb-3" />
-      <button onclick="startTimer()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg w-full">
-        ⏳ Start Task Timer
-      </button>
-      <div class="mt-4">
-        <p class="font-semibold">📝 Task: <span id="currentTask">None</span></p>
-        <p class="font-semibold mt-2">⏱ Time Left: <span id="timerDisplay">00:00</span></p>
-      </div>
-    </div>
-
-    <button onclick="goHome()" class="mt-8 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg w-full">
-      ⬅️ Back to Home
+  <div class="flex justify-center gap-2 mt-2">
+    <button onclick="startTimer()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+      ▶️ Start
+    </button>
+    <button onclick="pauseResumeTimer()" id="pauseBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded" disabled>
+      ⏸ Pause
+    </button>
+    <button onclick="resetTimer()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded" disabled>
+      🔁 Reset
     </button>
   </div>
+</div>
 
-  <script>
-    const roomData = JSON.parse(localStorage.getItem("roomData"));
+<script>
+  const roomData = JSON.parse(localStorage.getItem("roomData"));
 
-    if (!roomData) {
-      alert("No room data found. Redirecting...");
-      window.location.href = "homepage.html";
+  if (!roomData) {
+    alert("No room data found. Redirecting...");
+    window.location.href = "homepage.html";
+  }
+
+  document.getElementById("room-type").textContent = `Room Type: ${roomData.type}`;
+  document.getElementById("room-id").textContent = `Room ID: ${roomData.roomId}`;
+  document.getElementById("creator-name").textContent = `Created by: ${roomData.creator}`;
+
+  if (roomData.type === "Multi User" && roomData.participants?.length > 0) {
+    document.getElementById("participant-section").classList.remove("hidden");
+    const list = document.getElementById("participants-list");
+    roomData.participants.forEach((p) => {
+      const li = document.createElement("li");
+      li.textContent = p;
+      list.appendChild(li);
+    });
+  }
+
+  if (roomData.type === "Single User") {
+    document.getElementById("single-user-tools").classList.remove("hidden");
+  }
+
+  function goHome() {
+    window.location.href = "homepage.html";
+  }
+
+  // Timer Variables
+  let countdown;
+  let secondsLeft = 0;
+  let isPaused = false;
+
+  function startTimer() {
+    const task = document.getElementById("taskInput").value;
+    const minutes = parseInt(document.getElementById("timerInput").value);
+
+    if (!task || isNaN(minutes) || minutes <= 0) {
+      alert("Please enter a valid task and timer.");
+      return;
     }
 
-    document.getElementById("room-type").textContent = `Room Type: ${roomData.type}`;
-    document.getElementById("room-id").textContent = `Room ID: ${roomData.roomId}`;
-    document.getElementById("creator-name").textContent = `Created by: ${roomData.creator}`;
+    document.getElementById("currentTask").textContent = task;
+    secondsLeft = minutes * 60;
+    updateTimerDisplay();
 
-    // Show participants if Multi User
-    if (roomData.type === "Multi User" && roomData.participants?.length > 0) {
-      document.getElementById("participant-section").classList.remove("hidden");
-      const list = document.getElementById("participants-list");
-      roomData.participants.forEach((p) => {
-        const li = document.createElement("li");
-        li.textContent = p;
-        list.appendChild(li);
-      });
-    }
+    clearInterval(countdown);
+    isPaused = false;
 
-    // Show task tools if Single User
-    if (roomData.type === "Single User") {
-      document.getElementById("single-user-tools").classList.remove("hidden");
-    }
+    countdown = setInterval(() => {
+      if (!isPaused) {
+        secondsLeft--;
+        updateTimerDisplay();
 
-    function goHome() {
-      window.location.href = "homepage.html";
-    }
-
-    // Timer Logic
-    let countdown;
-    function startTimer() {
-      const task = document.getElementById("taskInput").value;
-      const minutes = parseInt(document.getElementById("timerInput").value);
-
-      if (!task || isNaN(minutes) || minutes <= 0) {
-        alert("Please enter a valid task and timer.");
-        return;
-      }
-
-      document.getElementById("currentTask").textContent = task;
-      let seconds = minutes * 60;
-
-      clearInterval(countdown);
-      countdown = setInterval(() => {
-        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-        const s = String(seconds % 60).padStart(2, '0');
-        document.getElementById("timerDisplay").textContent = `${m}:${s}`;
-        seconds--;
-
-        if (seconds < 0) {
+        if (secondsLeft <= 0) {
           clearInterval(countdown);
+          document.getElementById("pauseBtn").disabled = true;
           alert("⏰ Task time is over!");
         }
-      }, 1000);
-    }
-  </script>
-</body>
-</html>
+      }
+    }, 1000);
+
+    // Enable pause and reset
+    document.getElementById("pauseBtn").disabled = false;
+    document.querySelector('[onclick="resetTimer()"]').disabled = false;
+  }
+
+  function updateTimerDisplay() {
+    const m = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
+    const s = String(secondsLeft % 60).padStart(2, '0');
+    document.getElementById("timerDisplay").textContent = `${m}:${s}`;
+  }
+
+  function pauseResumeTimer() {
+    isPaused = !isPaused;
+    const btn = document.getElementById("pauseBtn");
+    btn.textContent = isPaused ? "▶️ Resume" : "⏸ Pause";
+  }
+
+  function resetTimer() {
+    clearInterval(countdown);
+    secondsLeft = 0;
+    updateTimerDisplay();
+    isPaused = false;
+    document.getElementById("currentTask").textContent = "None";
+    document.getElementById("pauseBtn").textContent = "⏸ Pause";
+    document.getElementById("pauseBtn").disabled = true;
+    document.querySelector('[onclick="resetTimer()"]').disabled = true;
+  }
+</script>
