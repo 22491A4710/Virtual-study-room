@@ -1,110 +1,126 @@
-<!-- Timer Buttons (Updated UI) -->
-<div class="mt-4 flex flex-col gap-2">
-  <p class="font-semibold">📝 Task: <span id="currentTask">None</span></p>
-  <p class="font-semibold">⏱ Time Left: <span id="timerDisplay">00:00</span></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Study Room</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans flex items-center justify-center min-h-screen p-4">
+  <div class="bg-white shadow-xl rounded-2xl p-8 max-w-xl w-full">
+    <h1 class="text-2xl font-bold text-center text-indigo-700 mb-2">📚 Virtual Study Room</h1>
+    <p class="text-center text-gray-600 mb-6" id="room-info"></p>
 
-  <div class="flex justify-center gap-2 mt-2">
-    <button onclick="startTimer()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-      ▶️ Start
-    </button>
-    <button onclick="pauseResumeTimer()" id="pauseBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded" disabled>
-      ⏸ Pause
-    </button>
-    <button onclick="resetTimer()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded" disabled>
-      🔁 Reset
-    </button>
+    <div class="mb-4 space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700">📝 Task</label>
+        <input id="taskInput" type="text" placeholder="Enter your task"
+          class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700">⏲ Duration (in minutes)</label>
+        <input id="timerInput" type="number" min="1" placeholder="e.g., 25"
+          class="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+      </div>
+    </div>
+
+    <div class="text-center mb-4">
+      <p class="text-lg font-semibold">Current Task: <span id="currentTask" class="text-indigo-600">None</span></p>
+      <p class="text-lg font-semibold">Time Left: <span id="timerDisplay" class="text-indigo-600">00:00</span></p>
+    </div>
+
+    <div class="flex justify-center gap-3 mb-6">
+      <button onclick="startTimer()" class="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-md">
+        ▶ Start
+      </button>
+      <button onclick="pauseResumeTimer()" id="pauseBtn" disabled
+        class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-4 py-2 rounded-md">
+        ⏸ Pause
+      </button>
+      <button onclick="resetTimer()" id="resetBtn" disabled
+        class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md">
+        🔁 Reset
+      </button>
+    </div>
+
+    <div class="text-center">
+      <button onclick="goHome()"
+        class="text-sm text-indigo-500 hover:underline mt-2">← Back to Homepage</button>
+    </div>
   </div>
-</div>
 
-<script>
-  const roomData = JSON.parse(localStorage.getItem("roomData"));
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    const roomData = JSON.parse(localStorage.getItem("roomData"));
 
-  if (!roomData) {
-    alert("No room data found. Redirecting...");
-    window.location.href = "homepage.html";
-  }
-
-  document.getElementById("room-type").textContent = `Room Type: ${roomData.type}`;
-  document.getElementById("room-id").textContent = `Room ID: ${roomData.roomId}`;
-  document.getElementById("creator-name").textContent = `Created by: ${roomData.creator}`;
-
-  if (roomData.type === "Multi User" && roomData.participants?.length > 0) {
-    document.getElementById("participant-section").classList.remove("hidden");
-    const list = document.getElementById("participants-list");
-    roomData.participants.forEach((p) => {
-      const li = document.createElement("li");
-      li.textContent = p;
-      list.appendChild(li);
-    });
-  }
-
-  if (roomData.type === "Single User") {
-    document.getElementById("single-user-tools").classList.remove("hidden");
-  }
-
-  function goHome() {
-    window.location.href = "homepage.html";
-  }
-
-  // Timer Variables
-  let countdown;
-  let secondsLeft = 0;
-  let isPaused = false;
-
-  function startTimer() {
-    const task = document.getElementById("taskInput").value;
-    const minutes = parseInt(document.getElementById("timerInput").value);
-
-    if (!task || isNaN(minutes) || minutes <= 0) {
-      alert("Please enter a valid task and timer.");
-      return;
+    if (!roomData) {
+      alert("Room not found. Redirecting to homepage.");
+      window.location.href = "homepage.html";
     }
 
-    document.getElementById("currentTask").textContent = task;
-    secondsLeft = minutes * 60;
-    updateTimerDisplay();
+    document.getElementById("room-info").textContent = `Room Type: ${roomData.type} | Room ID: ${roomData.id} | Created by: ${roomData.creator}`;
 
-    clearInterval(countdown);
-    isPaused = false;
+    let countdown;
+    let secondsLeft = 0;
+    let isPaused = false;
 
-    countdown = setInterval(() => {
-      if (!isPaused) {
-        secondsLeft--;
-        updateTimerDisplay();
+    function updateTimerDisplay() {
+      const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, "0");
+      const seconds = String(secondsLeft % 60).padStart(2, "0");
+      document.getElementById("timerDisplay").textContent = `${minutes}:${seconds}`;
+    }
 
-        if (secondsLeft <= 0) {
-          clearInterval(countdown);
-          document.getElementById("pauseBtn").disabled = true;
-          alert("⏰ Task time is over!");
-        }
+    function startTimer() {
+      const task = document.getElementById("taskInput").value.trim();
+      const minutes = parseInt(document.getElementById("timerInput").value);
+
+      if (!task || isNaN(minutes) || minutes <= 0) {
+        alert("Please enter a valid task and duration.");
+        return;
       }
-    }, 1000);
 
-    // Enable pause and reset
-    document.getElementById("pauseBtn").disabled = false;
-    document.querySelector('[onclick="resetTimer()"]').disabled = false;
-  }
+      document.getElementById("currentTask").textContent = task;
+      secondsLeft = minutes * 60;
+      isPaused = false;
+      updateTimerDisplay();
 
-  function updateTimerDisplay() {
-    const m = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
-    const s = String(secondsLeft % 60).padStart(2, '0');
-    document.getElementById("timerDisplay").textContent = `${m}:${s}`;
-  }
+      clearInterval(countdown);
+      countdown = setInterval(() => {
+        if (!isPaused && secondsLeft > 0) {
+          secondsLeft--;
+          updateTimerDisplay();
+          if (secondsLeft === 0) {
+            clearInterval(countdown);
+            document.getElementById("pauseBtn").disabled = true;
+            alert("✅ Time's up! Task complete.");
+          }
+        }
+      }, 1000);
 
-  function pauseResumeTimer() {
-    isPaused = !isPaused;
-    const btn = document.getElementById("pauseBtn");
-    btn.textContent = isPaused ? "▶️ Resume" : "⏸ Pause";
-  }
+      document.getElementById("pauseBtn").disabled = false;
+      document.getElementById("resetBtn").disabled = false;
+      document.getElementById("pauseBtn").textContent = "⏸ Pause";
+    }
 
-  function resetTimer() {
-    clearInterval(countdown);
-    secondsLeft = 0;
-    updateTimerDisplay();
-    isPaused = false;
-    document.getElementById("currentTask").textContent = "None";
-    document.getElementById("pauseBtn").textContent = "⏸ Pause";
-    document.getElementById("pauseBtn").disabled = true;
-    document.querySelector('[onclick="resetTimer()"]').disabled = true;
-  }
-</script>
+    function pauseResumeTimer() {
+      isPaused = !isPaused;
+      document.getElementById("pauseBtn").textContent = isPaused ? "▶ Resume" : "⏸ Pause";
+    }
+
+    function resetTimer() {
+      clearInterval(countdown);
+      secondsLeft = 0;
+      isPaused = false;
+      updateTimerDisplay();
+      document.getElementById("currentTask").textContent = "None";
+      document.getElementById("pauseBtn").disabled = true;
+      document.getElementById("resetBtn").disabled = true;
+      document.getElementById("pauseBtn").textContent = "⏸ Pause";
+    }
+
+    function goHome() {
+      window.location.href = "homepage.html";
+    }
+  </script>
+</body>
+</html>
