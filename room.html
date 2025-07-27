@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Study Room</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
   <div class="bg-white p-8 rounded-2xl shadow-xl w-[90%] max-w-lg text-center">
@@ -21,30 +21,40 @@
       <ul id="participants-list" class="list-disc list-inside text-left text-gray-700"></ul>
     </div>
 
-    <button onclick="goHome()" class="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
+    <!-- Only for Single User -->
+    <div id="single-user-tools" class="hidden mt-6">
+      <input id="taskInput" type="text" placeholder="Enter your task..." class="border p-2 rounded w-full mb-3" />
+      <input id="timerInput" type="number" placeholder="Set timer (minutes)" class="border p-2 rounded w-full mb-3" />
+      <button onclick="startTimer()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg w-full">
+        ⏳ Start Task Timer
+      </button>
+      <div class="mt-4">
+        <p class="font-semibold">📝 Task: <span id="currentTask">None</span></p>
+        <p class="font-semibold mt-2">⏱ Time Left: <span id="timerDisplay">00:00</span></p>
+      </div>
+    </div>
+
+    <button onclick="goHome()" class="mt-8 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg w-full">
       ⬅️ Back to Home
     </button>
   </div>
 
   <script>
-    // Load room and user details from localStorage
     const roomData = JSON.parse(localStorage.getItem("roomData"));
-    const userData = JSON.parse(localStorage.getItem("user"));
 
-    if (!roomData || !userData) {
-      alert("No room or user data found. Redirecting to homepage...");
+    if (!roomData) {
+      alert("No room data found. Redirecting...");
       window.location.href = "homepage.html";
     }
 
     document.getElementById("room-type").textContent = `Room Type: ${roomData.type}`;
     document.getElementById("room-id").textContent = `Room ID: ${roomData.roomId}`;
-    document.getElementById("creator-name").textContent = `Created by: ${userData.name || "Unknown"}`;
+    document.getElementById("creator-name").textContent = `Created by: ${roomData.creator}`;
 
-    // Show participants if it's a Multi User Room
-    if (roomData.type === "Multi User Room" && Array.isArray(roomData.participants) && roomData.participants.length > 0) {
-      const section = document.getElementById("participant-section");
+    // Show participants if Multi User
+    if (roomData.type === "Multi User" && roomData.participants?.length > 0) {
+      document.getElementById("participant-section").classList.remove("hidden");
       const list = document.getElementById("participants-list");
-      section.classList.remove("hidden");
       roomData.participants.forEach((p) => {
         const li = document.createElement("li");
         li.textContent = p;
@@ -52,8 +62,41 @@
       });
     }
 
+    // Show task tools if Single User
+    if (roomData.type === "Single User") {
+      document.getElementById("single-user-tools").classList.remove("hidden");
+    }
+
     function goHome() {
       window.location.href = "homepage.html";
+    }
+
+    // Timer Logic
+    let countdown;
+    function startTimer() {
+      const task = document.getElementById("taskInput").value;
+      const minutes = parseInt(document.getElementById("timerInput").value);
+
+      if (!task || isNaN(minutes) || minutes <= 0) {
+        alert("Please enter a valid task and timer.");
+        return;
+      }
+
+      document.getElementById("currentTask").textContent = task;
+      let seconds = minutes * 60;
+
+      clearInterval(countdown);
+      countdown = setInterval(() => {
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        document.getElementById("timerDisplay").textContent = `${m}:${s}`;
+        seconds--;
+
+        if (seconds < 0) {
+          clearInterval(countdown);
+          alert("⏰ Task time is over!");
+        }
+      }, 1000);
     }
   </script>
 </body>
